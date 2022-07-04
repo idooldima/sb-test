@@ -1,3 +1,5 @@
+import Background from '../../assets/img/background.jpg';
+
 export const styles = {
   pageContaier: {
     height: '100vh',
@@ -62,5 +64,9 @@ export const styles = {
   signUpLink: {
     color: '#9200dd',
     marginLeft: '3px',
+  },
+  signInImage: {
+    backgroundImage: `url(${Background})`,
+    wrap: 'no-wrap',
   },
 };

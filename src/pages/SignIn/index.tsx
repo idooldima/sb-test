@@ -1,6 +1,6 @@
-import { TextField, Button, Container, Box, Typography, Checkbox, Link, Grid } from '@mui/material';
+import { TextField, Container, Box, Typography, Checkbox, Grid } from '@mui/material';
+import { Button } from '../../stories/buttons/Button';
 import GoogleIcon from '@mui/icons-material/Google';
-import Background from '../../assets/img/background.jpg';
 import { useState } from 'react';
 import debounce from 'debounce';
 import { styles } from './signIn.styles';
@@ -8,6 +8,32 @@ import { styles } from './signIn.styles';
 export default function SignIn() {
   const [state, setState] = useState({ email: '', password: '' });
   const [validateState, setValidateState] = useState({ errEmail: '', errPassword: '' });
+
+  const validateEmail = debounce(({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    setState({ ...state, email: value });
+    let errorMessage = '';
+    if (value.length === 0) {
+      errorMessage = 'required';
+    } else if (!value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)) {
+      errorMessage = 'invalid E-mail';
+    }
+    setValidateState({ ...validateState, errEmail: errorMessage });
+  }, 300);
+
+  const validatePassword = debounce(
+    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+      setState({ ...state, password: value });
+      let errorMessage = '';
+      if (value.length === 0) {
+        errorMessage = 'required';
+      } else if (value.length < 5) {
+        errorMessage = 'password is too short';
+      }
+      setValidateState({ ...validateState, errPassword: errorMessage });
+    },
+    300
+  );
+
   return (
     <Grid container sx={styles.pageContaier}>
       <Grid item xs={6} sx={styles.signInContainer}>
@@ -26,16 +52,7 @@ export default function SignIn() {
             <Box sx={styles.signInInputContainer}>
               <Typography color="text.secondary">Email</Typography>
               <TextField
-                onChange={debounce(({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-                  setState({ ...state, email: value });
-                  let errorMessage = '';
-                  if (value.length === 0) {
-                    errorMessage = 'required';
-                  } else if (!value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)) {
-                    errorMessage = 'invalid E-mail';
-                  }
-                  setValidateState({ ...validateState, errEmail: errorMessage });
-                }, 300)}
+                onChange={validateEmail}
                 error={!!validateState.errEmail}
                 helperText={validateState.errEmail}
                 id="outlined-error"
@@ -50,16 +67,7 @@ export default function SignIn() {
                 type="password"
                 placeholder="password"
                 fullWidth
-                onChange={debounce(({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-                  setState({ ...state, password: value });
-                  let errorMessage = '';
-                  if (value.length === 0) {
-                    errorMessage = 'required';
-                  } else if (value.length < 5) {
-                    errorMessage = 'password is too short';
-                  }
-                  setValidateState({ ...validateState, errPassword: errorMessage });
-                }, 300)}
+                onChange={validatePassword}
                 error={!!validateState.errPassword}
                 helperText={validateState.errPassword}
               ></TextField>
@@ -73,7 +81,7 @@ export default function SignIn() {
               }}
             >
               <Box sx={styles.signInCheckbox}>
-                <Checkbox size="small"></Checkbox>
+                <Checkbox size="small" />
                 <Typography>Remember for 30 days</Typography>
               </Box>
               <Typography sx={styles.signInNotificationPassword}>Forgot password</Typography>
@@ -94,8 +102,13 @@ export default function SignIn() {
               </Button>
             </Box>
             <Box>
-              <Button sx={styles.signInGoogleBtn} fullWidth variant="outlined">
-                <GoogleIcon sx={styles.signInGoogleIcon}></GoogleIcon> Sign in with Google
+              <Button
+                sx={styles.signInGoogleBtn}
+                fullWidth
+                variant="outlined"
+                startIcon={<GoogleIcon sx={styles.signInGoogleIcon} />}
+              >
+                Sign in with Google
               </Button>
             </Box>
             <Box sx={styles.signInFooterContainer}>
@@ -106,7 +119,7 @@ export default function SignIn() {
         </Box>
       </Grid>
 
-      <Grid item xs={6} sx={{ backgroundImage: `url(${Background})`, wrap: 'no-wrap' }}></Grid>
+      <Grid item xs={6} sx={styles.signInImage}></Grid>
     </Grid>
   );
 }
