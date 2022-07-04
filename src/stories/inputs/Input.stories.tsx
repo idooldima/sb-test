@@ -1,4 +1,4 @@
-import { Input } from './Input';
+import { TextField } from '@mui/material';
 import { ComponentStory } from '@storybook/react';
 
 export default {
@@ -9,12 +9,12 @@ export default {
     },
   },
   title: 'Input',
-  component: Input,
+  component: TextField,
 };
 
-const Template: ComponentStory<typeof Input> = (arg) => <Input {...arg} />;
+const Template: ComponentStory<typeof TextField> = (arg) => <TextField {...arg} />;
 
-export const InputDefault = Template.bind({});
-InputDefault.args = {
+export const TextFieldDefault = Template.bind({});
+TextFieldDefault.args = {
   fullWidth: true,
 };
